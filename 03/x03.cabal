@@ -1,0 +1,47 @@
+cabal-version:      3.0
+name:               x03
+version:            0.1.0.0
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common warnings
+    ghc-options: -Wall
+    default-language: Haskell2010
+
+library
+    import:           warnings
+    exposed-modules:
+        Schematic
+        Types
+        Day03
+    build-depends:
+        base ^>=4.16.4.0
+        , attoparsec
+        , lens
+        , split
+    hs-source-dirs:   src
+
+executable x03
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.16.4.0,
+        x03
+
+    hs-source-dirs:   app
+
+test-suite tests
+    import:           warnings
+    default-language: Haskell2010
+    other-modules:
+        TestSchematic
+        TestData
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.16.4.0
+        , lens
+        , tasty
+        , tasty-hunit
+        , x03
