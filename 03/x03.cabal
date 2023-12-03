@@ -2,7 +2,6 @@ cabal-version:      3.0
 name:               x03
 version:            0.1.0.0
 build-type:         Simple
-extra-doc-files:    CHANGELOG.md
 
 common warnings
     ghc-options: -Wall
@@ -16,7 +15,6 @@ library
         Day03
     build-depends:
         base ^>=4.16.4.0
-        , attoparsec
         , lens
         , split
     hs-source-dirs:   src

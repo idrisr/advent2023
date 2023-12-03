@@ -6,14 +6,19 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as B
 import Parser
 
-firstLast :: B.ByteString -> Int
-firstLast s = 10 * head fs + head rs
+part2 :: B.ByteString -> Int
+part2 s = 10 * head fs + head rs
   where
     fs = getNumbers parseFLine s
     rs = getNumbers parseRLine $ B.reverse s
 
-runSum :: IO ()
-runSum =
+part1 :: B.ByteString -> Int
+part1 s = 10 * head fs + last fs
+  where
+    fs = getNumbers parseDigits s
+
+runSum :: (B.ByteString -> Int) -> IO ()
+runSum f =
     catch
         ( do
             arg <- handleArgs
@@ -21,7 +26,7 @@ runSum =
                 Left err -> putStrLn $ "Error " <> err
                 Right fname -> do
                     c <- B.lines <$> B.readFile fname
-                    let s = sum $ fmap firstLast c
+                    let s = sum $ fmap f c
                     putStrLn $ "Total: " ++ show s
         )
         handleErr

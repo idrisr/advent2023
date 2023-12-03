@@ -18,13 +18,21 @@ library
         , bytestring
     hs-source-dirs:   src
 
-executable x01
+executable part1
     import:           warnings
     main-is:          Main.hs
     build-depends:
         base
         , x01
-    hs-source-dirs:   app
+    hs-source-dirs:   part1
+
+executable part2
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base
+        , x01
+    hs-source-dirs:   part2
 
 test-suite tests
     import:           warnings

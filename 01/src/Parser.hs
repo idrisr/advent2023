@@ -14,9 +14,14 @@ getNumbers p b =
         Left _ -> []
         Right xs -> catMaybes xs
 
+parseDigits :: Parser [Maybe Int]
+parseDigits = many1 $ parseInt <|> parseChar
+
+-- parse line forwards
 parseFLine :: Parser [Maybe Int]
 parseFLine = many1 $ parseInt <|> parseNumber id <|> parseChar
 
+-- parse line backwards
 parseRLine :: Parser [Maybe Int]
 parseRLine = many1 $ parseInt <|> parseNumber B.reverse <|> parseChar
 

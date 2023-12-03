@@ -3,4 +3,4 @@ module Main where
 import Day01
 
 main :: IO ()
-main = runSum
+main = runSum part1
