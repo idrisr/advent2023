@@ -4,8 +4,19 @@ module Parser where
 
 import Data.Attoparsec.ByteString.Char8
 import Game
+import Lens.Micro.Platform
+import Prelude hiding (round)
 
 data Color a = Red a | Blue a | Green a
+
+getGame :: Parser Game
+getGame = do
+    a <- getGameID
+    b <- getRounds
+    pure $
+        game
+            & gameID .~ a
+            & rounds .~ b
 
 getGameID :: Parser Int
 getGameID = do
@@ -14,6 +25,14 @@ getGameID = do
     _ <- char ':'
     _ <- space
     pure d
+
+getRound :: Parser Round
+getRound = do
+    xs <- getColor `sepBy'` string ", "
+    pure $ makeRound round xs
+
+getRounds :: Parser [Round]
+getRounds = getRound `sepBy` string "; "
 
 getColor :: Parser (Color Int)
 getColor = do
@@ -27,26 +46,9 @@ getColor = do
         _ -> undefined
 
 makeRound :: Round -> [Color Int] -> Round
-makeRound = foldl f
+makeRound = foldl go
   where
-    f :: Round -> Color Int -> Round
-    f r (Red a) = r{red = a}
-    f r (Green a) = r{green = a}
-    f r (Blue a) = r{blue = a}
-
-emptyRound :: Round
-emptyRound = Round{red = 0, green = 0, blue = 0}
-
-getRound :: Parser Round
-getRound = do
-    xs <- getColor `sepBy'` string ", "
-    pure $ makeRound emptyRound xs
-
-getRounds :: Parser [Round]
-getRounds = getRound `sepBy` string "; "
-
-getGame :: Parser Game
-getGame = do
-    a <- getGameID
-    b <- getRounds
-    pure $ Game{gameID = a, rounds = b}
+    go :: Round -> Color Int -> Round
+    go r (Red a) = r & red .~ a
+    go r (Green a) = r & green .~ a
+    go r (Blue a) = r & blue .~ a

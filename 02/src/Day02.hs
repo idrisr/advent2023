@@ -5,24 +5,25 @@ import Data.Attoparsec.ByteString.Char8
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as B
 import Game
+import Lens.Micro.Platform
 import Parser
 import System.Environment
 
-contents :: Contents
-contents = Round{red = 12, green = 13, blue = 14}
-
 possible :: B.ByteString -> Int
-possible b = case game b of
+possible b = case parseOnly getGame b of
     Left _ -> undefined
     Right g ->
         if gamePossible contents g
-            then gameID g
+            then g ^. gameID
             else 0
-  where
-    game = parseOnly getGame
 
-runSum :: IO ()
-runSum =
+powerB :: B.ByteString -> Int
+powerB b = case parseOnly getGame b of
+    Left _ -> undefined
+    Right g -> power . minContents $ g
+
+runPart :: (B.ByteString -> Int) -> IO ()
+runPart f =
     catch
         ( do
             arg <- handleArgs
@@ -30,7 +31,7 @@ runSum =
                 Left err -> putStrLn $ "Error " <> err
                 Right fname -> do
                     c <- B.lines <$> B.readFile fname
-                    let s = sum $ fmap possible c
+                    let s = sum $ fmap f c
                     putStrLn $ "Total: " ++ show s
         )
         handleErr

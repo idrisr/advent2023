@@ -16,17 +16,25 @@ library
     build-depends:
         base ^>=4.16.4.0
         , attoparsec
-        , microlens
         , bytestring
+        , microlens-platform
     hs-source-dirs:   src
 
-executable x02
+executable part1
     import:           warnings
     main-is:          Main.hs
     build-depends:
         base ^>=4.16.4.0,
         x02
     hs-source-dirs:   app
+
+executable part2
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.16.4.0,
+        x02
+    hs-source-dirs:   part2
 
 test-suite tests
     import:           warnings
@@ -35,11 +43,13 @@ test-suite tests
     other-modules:
         TestGame
         TestParser
+        TestData
     main-is:          Main.hs
     build-depends:
         base ^>=4.16.4.0
         , attoparsec
         , bytestring
+        , microlens-platform
         , tasty
         , tasty-hunit
         , x02
