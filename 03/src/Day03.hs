@@ -8,7 +8,7 @@ import Types
 process :: [String] -> (Schematic -> Int) -> Int
 process xs f = f schematic
   where
-    ls = fmap makeLine xs
+    ls = makeLine <$> xs
     schematic = Schematic $ updateLines ls
 
 runPart :: (Schematic -> Int) -> IO ()

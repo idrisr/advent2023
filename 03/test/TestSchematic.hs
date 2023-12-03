@@ -27,8 +27,8 @@ testMakeLine = testGroup "make line" [
 
 testLines :: [Line]
 testLines =
-    fmap
         makeLine
+        <$>
         [ "...*......"
         , "..35..633."
         , "......#..."

@@ -54,7 +54,7 @@ line4 :: Line
 line4 = line & numbers .~ [] & symbols .~ [ ]
 
 testLines1 :: [Line]
-testLines1 = fmap makeLine
+testLines1 = makeLine <$>
             [ "467..114.."
             , "...*......"
             , "..35..633."

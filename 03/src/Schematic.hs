@@ -25,13 +25,14 @@ totalGears s = sum $ go <$> s ^. lines
 
 -- used to feed into updateLine
 padLines :: [Line] -> [(Maybe Line, Line, Maybe Line)]
-padLines ls = fmap f $ divvy 3 1 $ Nothing : (fmap Just ls ++ [Nothing])
+padLines ls = f <$> divvy 3 1 ms
   where
     f [a, Just b, c] = (a, b, c)
     f _ = undefined
+    ms = Nothing : (fmap Just ls ++ [Nothing])
 
 updateLines :: [Line] -> [Line]
-updateLines xs = fmap f ys
+updateLines xs = f <$> ys
   where
     ys = padLines xs
     f (a, b, c) = updateLine a b c
@@ -48,14 +49,14 @@ updateLine (Just a) c (Just b) = c
         & numbers %~ (`updateNumbers` (a ^. symbols ++ b ^. symbols ++ c ^. symbols))
         & stars %~ (`updateStars` (a ^. numbers ++ b ^. numbers ++ c ^. numbers))
 
-zdsf32 :: (a -> [b] -> a) -> [a] -> [b] -> [a]
-zdsf32 f ns xs = fmap (`f` xs) ns
+update2ndPass :: (a -> [b] -> a) -> [a] -> [b] -> [a]
+update2ndPass f ns xs = (`f` xs) <$> ns
 
 updateNumbers :: [Number] -> [Symbol] -> [Number]
-updateNumbers = zdsf32 updateNumber
+updateNumbers = update2ndPass updateNumber
 
 updateStars :: [Star] -> [Number] -> [Star]
-updateStars = zdsf32 updateStar
+updateStars = update2ndPass updateStar
 
 updateNumber :: Number -> [Symbol] -> Number
 updateNumber n xs = n & symbolAdjacent .~ b
@@ -95,7 +96,7 @@ makeLine s =
         & stars .~ fmap mkStar (filter (\x -> x ^. symValue == '*') zs)
   where
     zs = fmap (uncurry mkSymbol) (zip symbolValues symbolIndices)
-    numberIndices = fmap f $ consec $ findIndices isNumber s
+    numberIndices = f <$> consec (findIndices isNumber s)
       where
         f xs = (head xs, last xs)
     values :: [Int]
