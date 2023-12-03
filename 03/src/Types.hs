@@ -43,6 +43,12 @@ makeLenses ''Number
 makeLenses ''Symbol
 makeLenses ''Star
 
+starGearValue :: Lens' Star Int
+starGearValue = lens g setter
+  where
+    g s = if s ^. isGear then s ^. (gearValues . _1) * s ^. (gearValues . _2) else 0
+    setter = const
+
 numberSymbolValue :: Lens' Number Int
 numberSymbolValue = lens g s
   where

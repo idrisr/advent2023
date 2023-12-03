@@ -14,11 +14,14 @@ totalSchematic :: Schematic -> Int
 totalSchematic s = sum $ go <$> s ^. lines
   where
     go :: Line -> Int
-    go l = sum $ fmap go1 $ l ^. numbers
-    go1 n = n ^. numberSymbolValue
+    go l = sum $ (^. numberSymbolValue) <$> l ^. numbers
 
 totalGears :: Schematic -> Int
-totalGears s = sum $ totalLine2 <$> s^.lines
+totalGears s = sum $ go <$> s ^. lines
+  where
+    -- sum gear ratios
+    go :: Line -> Int
+    go l = sum $ (^. starGearValue) <$> l ^. stars
 
 -- used to feed into updateLine
 padLines :: [Line] -> [(Maybe Line, Line, Maybe Line)]
@@ -26,12 +29,6 @@ padLines ls = fmap f $ divvy 3 1 $ Nothing : (fmap Just ls ++ [Nothing])
   where
     f [a, Just b, c] = (a, b, c)
     f _ = undefined
-
--- sum gear ratios
-totalLine2 :: Line -> Int
-totalLine2 l = sum $ fmap go $ l ^. stars
-  where
-    go s = if s ^. isGear then s ^. (gearValues . _1) * s ^. (gearValues . _2) else 0
 
 updateLines :: [Line] -> [Line]
 updateLines xs = fmap f ys
