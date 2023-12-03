@@ -5,27 +5,24 @@ import System.Environment
 import Schematic
 import Types
 
-asdf :: [String] -> Int
-asdf xs = totalSchematic schematic
-    where ls = fmap makeLine xs
-          schematic = Schematic $ updateLines ls
+process :: [String] -> (Schematic -> Int) -> Int
+process xs f = f schematic
+  where
+    ls = fmap makeLine xs
+    schematic = Schematic $ updateLines ls
 
-runPart :: IO ()
-runPart =
-    catch
-        ( do
-            arg <- handleArgs
-            case arg of
-                Left err -> putStrLn $ "Error " <> err
-                Right fname -> do
-                    c <- Prelude.lines <$> readFile fname
-                    let s = asdf c
-                    putStrLn $ "Total: " ++ show s
-        )
-        handleErr
+runPart :: (Schematic -> Int) -> IO ()
+runPart f = catch processFile handleErr
   where
     handleErr :: IOError -> IO ()
     handleErr e = putStrLn "Error" >> print e
+    processFile = do
+        arg <- handleArgs
+        case arg of
+            Left err -> putStrLn $ "Error " <> err
+            Right fname -> do
+                c <- Prelude.lines <$> readFile fname
+                putStrLn $ "Total: " ++ show (process c f)
 
 handleArgs :: IO (Either String FilePath)
 handleArgs = do
