@@ -1,0 +1,54 @@
+cabal-version:      3.0
+name:               x04
+version:            0.1.0.0
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall
+    default-language: Haskell2010
+
+library
+    import:           warnings
+    exposed-modules:
+        Types
+        Parser
+        Day04
+    build-depends:
+        base ^>=4.16.4.0
+        , attoparsec
+        , bytestring
+        , lens
+    hs-source-dirs:   src
+
+executable part1
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.16.4.0,
+        x04
+    hs-source-dirs:   part1
+
+executable part2
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.16.4.0,
+        x04
+    hs-source-dirs:   part2
+
+test-suite tests
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    other-modules:
+        TestCard
+        TestData
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.16.4.0
+        , attoparsec
+        , bytestring
+        , lens
+        , tasty
+        , tasty-hunit
+        , x04
