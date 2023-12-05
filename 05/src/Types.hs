@@ -5,6 +5,7 @@ import Control.Lens
 import Data.Maybe
 
 newtype Seed = Seed Int
+    deriving Show
 newtype Soil = Soil Int
 newtype Fertilizer = Fertilizer Int
 newtype Water = Water Int
@@ -24,6 +25,12 @@ data FarmMap = FarmMap
     }
     deriving (Show)
 
+data SeedRange = SeedRange
+    { _minSeed :: Seed
+    , _count :: Seed
+    }
+    deriving (Show)
+
 data Range = Range {
     _dest :: Int,
     _source :: Int,
@@ -32,6 +39,10 @@ data Range = Range {
 
 makeLenses ''Range
 makeLenses ''FarmMap
+makeLenses ''SeedRange
+
+seedRange :: SeedRange -> [Seed]
+seedRange (SeedRange (Seed a) (Seed b)) = fmap Seed [a .. (a + b - 1)]
 
 minValueR :: Getter Range Int
 minValueR = lens (^.source) const

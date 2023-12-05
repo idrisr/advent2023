@@ -5,12 +5,21 @@ module Parser where
 import Data.Attoparsec.ByteString.Char8
 import Types
 import Control.Lens
+import Data.List.Split
 import qualified Data.ByteString as B
+
+getSeedRange :: Parser [SeedRange]
+getSeedRange = do
+    ss <- getSeeds
+    let xs = chunksOf 2 ss
+    let
+        f [a, b] = SeedRange a b
+        f _ = undefined
+    pure $ fmap f xs
 
 getSeeds :: Parser [Seed]
 getSeeds = do
-    _ <- string "seeds: "
-    ss <- decimal `sepBy1` many1 space
+    ss <- string "seeds: " >> decimal `sepBy1` many1 space
     _ <- many' endOfLine
     pure $ fmap Seed ss
 
@@ -19,10 +28,8 @@ getRange =
     let range = Range 0 0 0
      in do
             d <- decimal
-            _ <- space
-            s <- decimal
-            _ <- space
-            r <- decimal
+            s <- space >> decimal
+            r <- space  >> decimal
             _ <- many' endOfLine
             pure $ range & dest .~ d & source .~ s & rangeLength .~ r
 
@@ -33,11 +40,22 @@ getMap b = do
     _ <- many' endOfLine
     pure rs
 
-getFarmMap :: Parser (FarmMap, [Seed])
+getFarmMapPart1 :: Parser (FarmMap, [Seed])
+getFarmMapPart1 = do
+    seeds <- getSeeds
+    fm <- getFarmMap
+    pure (fm, seeds)
+
+getFarmMapPart2 :: Parser (FarmMap, [SeedRange])
+getFarmMapPart2 = do
+    seedRanges <- getSeedRange
+    fm <- getFarmMap
+    pure (fm, seedRanges)
+
+getFarmMap :: Parser FarmMap
 getFarmMap =
     let farmMapEmpty = FarmMap [] [] [] [] [] [] []
      in do
-            seeds <- getSeeds
             r1 <- getMap "seed-to-soil map:"
             r2 <- getMap "soil-to-fertilizer map:"
             r3 <- getMap "fertilizer-to-water map:"
@@ -54,4 +72,4 @@ getFarmMap =
                         & light2tempR .~ r5
                         & temp2humidR .~ r6
                         & humid2locaR .~ r7
-            pure (fm, seeds)
+            pure fm

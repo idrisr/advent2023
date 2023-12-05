@@ -15,28 +15,24 @@ library
         Day05
     build-depends:
         base ^>=4.16.4.0
-        , lens
         , attoparsec
         , bytestring
+        , lens
+        , split
     hs-source-dirs:   src
 
 executable part1
     import:           warnings
     main-is:          Main.hs
-    -- other-modules:
-    -- other-extensions:
     build-depends:
         base ^>=4.16.4.0,
         x05
     hs-source-dirs:   part1
 
-test-suite x05-test
+executable part2
     import:           warnings
-    -- other-modules:
-    -- other-extensions:
-    type:             exitcode-stdio-1.0
-    hs-source-dirs:   test
     main-is:          Main.hs
     build-depends:
         base ^>=4.16.4.0,
         x05
+    hs-source-dirs:   part2
