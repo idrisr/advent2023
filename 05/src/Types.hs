@@ -4,13 +4,13 @@ module Types where
 import Control.Lens
 import Data.Maybe
 
-newtype Seed = Seed Int deriving (Eq, Ord, Show)
-newtype Soil = Soil Int deriving (Eq, Ord, Show)
-newtype Fertilizer = Fertilizer Int deriving (Eq, Ord, Show)
-newtype Water = Water Int deriving (Eq, Ord, Show)
-newtype Light = Light Int deriving (Eq, Ord, Show)
-newtype Temperature = Temperature Int deriving (Eq, Ord, Show)
-newtype Humidity = Humidity Int deriving (Eq, Ord, Show)
+newtype Seed = Seed Int
+newtype Soil = Soil Int
+newtype Fertilizer = Fertilizer Int
+newtype Water = Water Int
+newtype Light = Light Int
+newtype Temperature = Temperature Int
+newtype Humidity = Humidity Int
 newtype Location = Location Int deriving (Eq, Ord, Show)
 
 data FarmMap = FarmMap
@@ -24,17 +24,11 @@ data FarmMap = FarmMap
     }
     deriving (Show)
 
-farmMapEmpty :: FarmMap
-farmMapEmpty = FarmMap [] [] [] [] [] [] []
-
 data Range = Range {
     _dest :: Int,
     _source :: Int,
     _rangeLength :: Int
 } deriving Show
-
-range :: Range
-range = Range 0 0 0
 
 makeLenses ''Range
 makeLenses ''FarmMap

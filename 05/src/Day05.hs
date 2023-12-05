@@ -10,7 +10,7 @@ import Types
 
 process1 :: B.ByteString -> IO (FarmMap, [Seed])
 process1 b = case parseOnly getFarmMap b of
-    Left e -> B.putStrLn b >> putStrLn e >> pure (farmMapEmpty, [])
+    Left e -> B.putStrLn b >> putStrLn e >> pure (FarmMap [] [] [] [] [] [] [], [])
     Right a -> pure a
 
 runPart1 :: IO ()
@@ -25,7 +25,7 @@ runPart1 = catch processFile handleErr
             Right fname -> do
                 c <- B.readFile fname
                 (f, ss) <- process1 c
-                let seed = minimum $ fmap (seed2Location f)  ss
+                let seed = minimum $ fmap (seed2Location f) ss
                 putStrLn $ "Minimum Seed: " ++ show seed
 
 handleArgs :: IO (Either String FilePath)
