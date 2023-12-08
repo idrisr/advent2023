@@ -1,0 +1,51 @@
+cabal-version:      3.0
+name:               x07
+version:            0.1.0.0
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common warnings
+    ghc-options: -Wall
+    default-language: Haskell2010
+
+library
+    import:           warnings
+    exposed-modules:
+        Parser
+        Types
+        Params
+    build-depends:
+        base ^>=4.16.4.0
+        , attoparsec
+        , colonnade
+        , text
+        , lens
+        , optparse-applicative
+    hs-source-dirs:   src
+
+executable day7
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.16.4.0
+        , x07
+        , text
+        , attoparsec
+        , lens
+        , optparse-applicative
+    hs-source-dirs:   app
+
+test-suite wtf
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    other-modules:
+        TestTypes
+    main-is:
+        Main.hs
+    build-depends:
+        base ^>=4.16.4.0
+        , lens
+        , tasty
+        , tasty-hunit
+        , x07
