@@ -30,6 +30,7 @@
         day03 = with pkgs; haskell.packages.${compiler}.callPackage ./03 { };
         day04 = with pkgs; haskell.packages.${compiler}.callPackage ./04 { };
         day05 = with pkgs; haskell.packages.${compiler}.callPackage ./05 { };
+        day08 = with pkgs; haskell.packages.${compiler}.callPackage ./08 { };
         mkApp = day: part:
           {
             program = "${day}/bin/part${part}";
@@ -49,6 +50,11 @@
           day04p2 = mkApp "${day04}" "2";
           day05p1 = mkApp "${day05}" "1";
           day05p2 = mkApp "${day05}" "2";
+
+          day08 = {
+            type = "app";
+            program = "${day08}/bin/day8";
+          };
         };
         devShells.default = pkgs.mkShell {
           buildInputs = myDevTools;

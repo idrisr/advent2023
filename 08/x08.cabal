@@ -22,7 +22,7 @@ library
         , mtl
     hs-source-dirs:   src
 
-executable x08
+executable day8
     import:           warnings
     main-is:          Main.hs
     build-depends:

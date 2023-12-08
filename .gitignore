@@ -13,7 +13,6 @@ cabal-dev
 .hsenv
 .cabal-sandbox/
 cabal.sandbox.config
-*.prof
 *.aux
 *.hp
 *.eventlog
