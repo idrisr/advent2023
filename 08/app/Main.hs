@@ -14,40 +14,32 @@ import Parse
 
 type Node = ByteString
 type MyState = (Directions, NetworkMap, Node)
-type MyState2 = (Directions, NetworkMap, [Node])
 
 main :: IO ()
 main = do
     params <- cliParser -- get params
     t <- fileReader params -- read file
     (d, n) <- doParse t -- parse file
-    print $ traverseMap2 1 (infBS d, n, ["AAA", "SJA", "BXA","QTA", "HCA", "LDA" ])
 
--- hack. couldnt figure out cycle
+    case params^.part of
+        Part1 -> print $ traverseMap allZ 1 (infBS d, n, "AAA")
+        Part2 -> do
+                 let f node = traverseMap endsInZ 1 (infBS d, n, node)
+                 let nodes = filter endsInA (Map.keys n)
+                 print $ foldl lcm 1 $ f <$> nodes
+
 infBS :: ByteString -> ByteString
-infBS = B.pack . concat . replicate 1000000 . B.unpack
-
--- s -> (a, s)
-
-myState2 :: State MyState2 ()
-myState2 = state thing
-  where
-    thing :: (Directions, NetworkMap, [Node]) -> ((), (Directions, NetworkMap, [Node]))
-    thing (d, m, n) = ((), (B.tail d, m, fmap go n))
-      where
-        go z = case B.head d of
-            76 -> fst . fromJust $ Map.lookup z m -- L
-            _ -> snd . fromJust $ Map.lookup z m -- R
-
-traverseMap2 :: Int -> MyState2 -> Int
-traverseMap2 i s =
-    let (_, (d, m, n)) = runState myState2 s
-     in if and $ endsInZ <$> n
-            then i
-            else traverseMap2 (i + 1) (d, m, n)
+-- hack!!
+infBS = B.pack . concat . replicate 80 . B.unpack
 
 endsInZ :: ByteString -> Bool
 endsInZ b = B.last b == 90
+
+endsInA :: ByteString -> Bool
+endsInA b = B.last b == 65
+
+allZ :: ByteString -> Bool
+allZ b = b == "ZZZ"
 
 myState :: State MyState ()
 myState = state thing
@@ -59,12 +51,12 @@ myState = state thing
                 76 -> fst . fromJust $ Map.lookup n m -- L
                 _ -> snd . fromJust $ Map.lookup n m -- R
 
-traverseMap :: Int -> MyState -> Int
-traverseMap i s =
+traverseMap :: (ByteString -> Bool) -> Int -> MyState -> Int
+traverseMap f i s =
     let (_, (d, m, n)) = runState myState s
-     in if n == "ZZZ"
-            then i
-            else traverseMap (i + 1) (d, m, n)
+     in if f n
+        then i
+        else traverseMap f (i + 1) (d, m, n)
 
 fileReader :: Params -> IO ByteString
 fileReader p =
