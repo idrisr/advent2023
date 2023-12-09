@@ -13,3 +13,10 @@ executable day9
     build-depends:
         base ^>=4.16.4.0
     hs-source-dirs:   app
+
+executable day9g
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.16.4.0
+    hs-source-dirs:   glguy
